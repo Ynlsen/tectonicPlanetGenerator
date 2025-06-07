@@ -11,7 +11,8 @@ config_version=5
 [application]
 
 config/name="tectonicPlanetGenerator"
-config/features=PackedStringArray("4.4", "Forward Plus")
+run/main_scene="uid://ccb5e6alhshgv"
+config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [dotnet]
