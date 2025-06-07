@@ -7,6 +7,8 @@ public partial class Planet : Node3D
 	[Export] public int Resolution = 10;
 	[Export] public float Radius = 1f;
 
+    [ExportToolButton("Build planet")] public Callable BuildPlanetButton => Callable.From(BuildPlanet);
+
 	public override void _Ready()
 	{
 		BuildPlanet();
