@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4a3mv0tjgaoy"]
+
+[ext_resource type="Script" uid="uid://wlgqm4ni8t7c" path="res://scripts/FaceMesh.cs" id="1_s6r3t"]
+
+[node name="MeshInstance3D" type="MeshInstance3D"]
+script = ExtResource("1_s6r3t")
