@@ -63,6 +63,8 @@ public partial class FaceMesh : MeshInstance3D
 		combined[(int)Mesh.ArrayType.Vertex] = vertices;
 		combined[(int)Mesh.ArrayType.Index] = indices;
 
+		combined[(int)Mesh.ArrayType.Normal] = vertices; // This is a very temporary solution. On a perfect sphere they are the same!!
+
 		_mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, combined);
 		
 		Mesh = _mesh;
