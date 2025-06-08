@@ -5,6 +5,8 @@ public partial class FaceMesh : MeshInstance3D
 {
 	[Export] public int Resolution = 10;
 
+	[Export] public ShapeSettings ShapeSettings;
+
 	[ExportToolButton("Build mesh")] public Callable BuildMeshButton => Callable.From(BuildMesh);
 
 	private ArrayMesh _mesh =  new ArrayMesh();
@@ -19,6 +21,16 @@ public partial class FaceMesh : MeshInstance3D
 	{
 		_mesh.ClearSurfaces();
 
+		var noise = new FastNoiseLite
+		{
+			Seed           = ShapeSettings.Seed,
+			NoiseType      = FastNoiseLite.NoiseTypeEnum.Simplex,
+			Frequency      = ShapeSettings.NoiseScale,
+			FractalOctaves = 1,
+			FractalLacunarity = 2.0f,
+			FractalGain       = 0.5f
+		};
+
 		var vertices = new Vector3[Resolution * Resolution];
 
 		int counter = 0;
@@ -31,9 +43,15 @@ public partial class FaceMesh : MeshInstance3D
 			{
 				float u = x / (float)(Resolution - 1);
 
-				var point = new Vector3((u - .5f) * 2f, 1, -(v - .5f) * 2f);
+				var raw = new Vector3((u - .5f) * 2f, 1, -(v - .5f) * 2f);
 
-				vertices[counter++] = point.Normalized();
+				var spherical = raw.Normalized();
+
+				float n = noise.GetNoise3D(spherical.X,spherical.Y,spherical.Z);
+
+				float elevation = Mathf.Lerp(ShapeSettings.MinHeight, ShapeSettings.MaxHeight, n);
+
+				vertices[counter++] = spherical * (1 + elevation);
 			}
 		}
 

@@ -7,7 +7,9 @@ public partial class Planet : Node3D
 	[Export] public int Resolution = 10;
 	[Export] public float Radius = 1f;
 
-    [ExportToolButton("Build planet")] public Callable BuildPlanetButton => Callable.From(BuildPlanet);
+	[Export] public ShapeSettings ShapeSettings; 
+
+	[ExportToolButton("Build planet")] public Callable BuildPlanetButton => Callable.From(BuildPlanet);
 
 	public override void _Ready()
 	{
@@ -36,6 +38,8 @@ public partial class Planet : Node3D
 			var face = FaceScene.Instantiate<FaceMesh>();
 
 			face.Resolution = Resolution;
+
+			face.ShapeSettings  = ShapeSettings;			
 
 			face.Scale = Vector3.One * Radius;
 
