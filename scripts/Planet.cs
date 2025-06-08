@@ -23,17 +23,17 @@ public partial class Planet : Node3D
 			child.QueueFree();
 		}
 
-		var rotations = new Vector3[]
+		var directions = new Vector3[]
 		{
-			new Vector3(  0,   0,   0),
-			new Vector3(180,   0,   0), 
-			new Vector3(  0,   0,  90), 
-			new Vector3(  0,   0, -90),
-			new Vector3(-90,   0,   0),
-			new Vector3( 90,   0,   0)
+			Vector3.Up,
+			Vector3.Down,
+			Vector3.Left,
+			Vector3.Right,
+			Vector3.Forward,
+			Vector3.Back,
 		};
 
-		foreach (var rotation in rotations)
+		foreach (var direction in directions)
 		{
 			var face = FaceScene.Instantiate<FaceMesh>();
 
@@ -43,7 +43,7 @@ public partial class Planet : Node3D
 
 			face.Scale = Vector3.One * Radius;
 
-			face.RotationDegrees = rotation;
+			face.FaceDirection = direction;
 
 			AddChild(face);
 		}

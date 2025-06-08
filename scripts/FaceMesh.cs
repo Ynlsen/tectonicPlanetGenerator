@@ -7,9 +7,28 @@ public partial class FaceMesh : MeshInstance3D
 
 	[Export] public ShapeSettings ShapeSettings;
 
+	[Export] public Vector3 FaceDirection = Vector3.Up; 
+
 	[ExportToolButton("Build mesh")] public Callable BuildMeshButton => Callable.From(BuildMesh);
 
 	private ArrayMesh _mesh =  new ArrayMesh();
+
+	private Vector3 tangent1;
+	private Vector3 tangent2;
+
+	private void CalculateTangents()
+	{
+		if (Mathf.Abs(FaceDirection.Dot(Vector3.Up)) > 0.9f)
+		{
+			tangent1 = Vector3.Forward;
+		}
+		else
+		{
+			tangent1 = Vector3.Up;
+		}
+
+		tangent2 = FaceDirection.Cross(tangent1).Normalized();
+	}
 
 	public override void _Ready()
 	{
@@ -19,6 +38,7 @@ public partial class FaceMesh : MeshInstance3D
 
 	private void BuildMesh()
 	{
+		CalculateTangents();
 		_mesh.ClearSurfaces();
 
 		var noise = new FastNoiseLite
@@ -43,7 +63,7 @@ public partial class FaceMesh : MeshInstance3D
 			{
 				float u = x / (float)(Resolution - 1);
 
-				var raw = new Vector3((u - .5f) * 2f, 1, -(v - .5f) * 2f);
+				Vector3 raw = (u - .5f) * 2f * tangent1 + FaceDirection + (v - .5f) * 2f * tangent2;
 
 				var spherical = raw.Normalized();
 
