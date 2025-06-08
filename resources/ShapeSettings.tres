@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://v5jld7vq8hml"]
+
+[ext_resource type="Script" uid="uid://dyyt6a63d7pj6" path="res://scripts/ShapeSettings.cs" id="1_rylde"]
+
+[resource]
+script = ExtResource("1_rylde")
+Seed = 42
+NoiseScale = 1.0
+MinHeight = 0.0
+MaxHeight = 0.2

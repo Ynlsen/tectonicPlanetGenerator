@@ -1,8 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://by7rb348rmugp"]
-
-[ext_resource type="Script" uid="uid://cc0nh1yu0odcx" path="res://scripts/Planet.cs" id="1_jpiwe"]
-[ext_resource type="PackedScene" uid="uid://c4a3mv0tjgaoy" path="res://scene/FaceMesh.tscn" id="2_1njst"]
-
-[node name="Node3D" type="Node3D"]
-script = ExtResource("1_jpiwe")
-FaceScene = ExtResource("2_1njst")
