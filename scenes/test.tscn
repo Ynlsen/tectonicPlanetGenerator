@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://ccb5e6alhshgv"]
+
+[ext_resource type="PackedScene" uid="uid://by7rb348rmugp" path="res://scenes/Planet.tscn" id="1_fghjm"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Node3D" parent="." instance=ExtResource("1_fghjm")]
+Resolution = 100
