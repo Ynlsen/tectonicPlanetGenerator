@@ -1,17 +1,15 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 
-[Tool]
 public partial class TectonicSimulation : Node
 {
-  [Export] public TectonicSettings TectonicSettings;
+  public TectonicSettings TectonicSettings;
 
   private class Plate
   {
     public int Id;
 
-    public List<Vector3> SubPoints;
+    public List<Vector3> SubPoints = new();
   }
 
   private class PlatePoint
