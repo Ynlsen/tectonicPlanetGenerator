@@ -9,6 +9,8 @@ public partial class Planet : Node3D
 
 	[Export] public ShapeSettings ShapeSettings; 
 
+  [Export] public TectonicSettings TectonicSettings; 
+
 	[ExportToolButton("Build planet")] public Callable BuildPlanetButton => Callable.From(BuildPlanet);
 
   private TectonicSimulation tectonicSimulation;
@@ -26,10 +28,11 @@ public partial class Planet : Node3D
 		}
 
     tectonicSimulation = new TectonicSimulation();
+    tectonicSimulation.TectonicSettings = TectonicSettings;
 
     tectonicSimulation.GeneratePlates();
 
-		var directions = new Vector3[]
+    var directions = new Vector3[]
 		{
 			Vector3.Up,
 			Vector3.Down,
