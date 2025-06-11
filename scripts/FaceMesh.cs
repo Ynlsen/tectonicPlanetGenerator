@@ -16,7 +16,7 @@ public partial class FaceMesh : MeshInstance3D
 	private Vector3 tangent1;
 	private Vector3 tangent2;
 
-  private TectonicSimulation tectonicSimulation;
+  public TectonicSimulation tectonicSimulation;
 
 	private void CalculateTangents()
   {
