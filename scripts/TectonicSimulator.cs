@@ -41,7 +41,7 @@ public partial class TectonicSimulation : Node
     {
       var nextPoint = new PlatePoint();
       nextPoint.Location = point;
-      nextPoint.Id = GetPlate(point);
+      nextPoint.Id = GetDeviationPlate(point);
       platePoints.Add(nextPoint);
     }
   }
@@ -80,8 +80,28 @@ public partial class TectonicSimulation : Node
     }
     return points;
   }
-  
-  // Somehow needs to use deviationPoints during plate generation and platePoints during mesh generation.
+
+  private int GetDeviationPlate(Vector3 vertex)
+  {
+    int bestPlate = -1;
+    float bestDistance = float.MaxValue;
+
+    foreach (var plate in plates)
+    {
+      foreach (var subPoint in plate.SubPoints)
+      {
+        float distance = vertex.DistanceSquaredTo(subPoint);
+        if (distance < bestDistance)
+        {
+          bestDistance = distance;
+          bestPlate = plate.Id;
+        }
+      }
+    }
+
+    return bestPlate;
+  }
+
   public int GetPlate(Vector3 vertex)
   {
     // Find the closest point on the sphere to the vertex
