@@ -104,7 +104,19 @@ public partial class TectonicSimulation : Node
 
   public int GetPlate(Vector3 vertex)
   {
-    // Find the closest point on the sphere to the vertex
-    // Return its plate ID
+    int bestPlate = -1;
+    float bestDistance = float.MaxValue;
+
+    foreach (var platePoint in platePoints)
+    {
+      float distance = vertex.DistanceSquaredTo(platePoint.Location);
+      if (distance < bestDistance)
+      {
+        bestDistance = distance;
+        bestPlate = platePoint.Id;
+      }
+    }
+
+    return bestPlate;
   }
 }
