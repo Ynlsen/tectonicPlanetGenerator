@@ -16,19 +16,21 @@ public partial class FaceMesh : MeshInstance3D
 	private Vector3 tangent1;
 	private Vector3 tangent2;
 
-	private void CalculateTangents()
-	{
-		if (Mathf.Abs(FaceDirection.Dot(Vector3.Up)) > 0.9f)
-		{
-			tangent1 = Vector3.Forward;
-		}
-		else
-		{
-			tangent1 = Vector3.Up;
-		}
+  private TectonicSimulation tectonicSimulation;
 
-		tangent2 = FaceDirection.Cross(tangent1).Normalized();
-	}
+	private void CalculateTangents()
+  {
+    if (Mathf.Abs(FaceDirection.Dot(Vector3.Up)) > 0.9f)
+    {
+      tangent1 = Vector3.Forward;
+    }
+    else
+    {
+      tangent1 = Vector3.Up;
+    }
+
+    tangent2 = FaceDirection.Cross(tangent1).Normalized();
+  }
 
 	public override void _Ready()
 	{
@@ -36,75 +38,89 @@ public partial class FaceMesh : MeshInstance3D
 		BuildMesh();
 	}
 
-	private void BuildMesh()
-	{
-		CalculateTangents();
-		_mesh.ClearSurfaces();
+  private void BuildMesh()
+  {
+    CalculateTangents();
+    _mesh.ClearSurfaces();
 
-		var noise = new FastNoiseLite
-		{
-			Seed           = ShapeSettings.Seed,
-			NoiseType      = FastNoiseLite.NoiseTypeEnum.Simplex,
-			Frequency      = ShapeSettings.NoiseScale,
-			FractalOctaves = 1,
-			FractalLacunarity = 2.0f,
-			FractalGain       = 0.5f
-		};
+    var noise = new FastNoiseLite
+    {
+      Seed = ShapeSettings.Seed,
+      NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex,
+      Frequency = ShapeSettings.NoiseScale,
+      FractalOctaves = 1,
+      FractalLacunarity = 2.0f,
+      FractalGain = 0.5f
+    };
 
-		var vertices = new Vector3[Resolution * Resolution];
+    var vertices = new Vector3[Resolution * Resolution];
+    var colors = new Color[Resolution * Resolution];
 
-		int counter = 0;
+    int counter = 0;
 
-		for (int y = 0; y < Resolution; y++)
-		{
-			float v = y / (float)(Resolution - 1);
+    for (int y = 0; y < Resolution; y++)
+    {
+      float v = y / (float)(Resolution - 1);
 
-			for (int x = 0; x < Resolution; x++)
-			{
-				float u = x / (float)(Resolution - 1);
+      for (int x = 0; x < Resolution; x++)
+      {
+        float u = x / (float)(Resolution - 1);
 
-				Vector3 raw = (u - .5f) * 2f * tangent1 + FaceDirection + (v - .5f) * 2f * tangent2;
+        Vector3 raw = (u - .5f) * 2f * tangent1 + FaceDirection + (v - .5f) * 2f * tangent2;
 
-				var spherical = raw.Normalized();
+        var spherical = raw.Normalized();
 
-				float n = noise.GetNoise3D(spherical.X,spherical.Y,spherical.Z);
+        float n = noise.GetNoise3D(spherical.X, spherical.Y, spherical.Z);
 
-				float elevation = Mathf.Lerp(ShapeSettings.MinHeight, ShapeSettings.MaxHeight, n);
+        float elevation = Mathf.Lerp(ShapeSettings.MinHeight, ShapeSettings.MaxHeight, n);
 
-				vertices[counter++] = spherical * (1 + elevation);
-			}
-		}
+        vertices[counter] = spherical * (1 + elevation);
 
-		var indices = new int[(Resolution - 1) * (Resolution - 1) * 6];
+        var plateId = tectonicSimulation.GetPlate(spherical);
 
-		counter = 0;
+        var hue = plateId / (float)(tectonicSimulation.TectonicSettings.LargePlateCount + tectonicSimulation.TectonicSettings.SmallPlateCount);
+        colors[counter] = Color.FromHsv(hue, 1, 1);
 
-		for (int y = 0; y < Resolution - 1; y++)
-		{
-			for (int x = 0; x < Resolution - 1; x++)
-			{
-				int i = x + y * Resolution;
+        counter++;
+      }
+    }
 
-				indices[counter++] = i;
-				indices[counter++] = i + Resolution;
-				indices[counter++] = i + Resolution + 1;
-				indices[counter++] = i;
-				indices[counter++] = i + Resolution + 1;
-				indices[counter++] = i + 1;
-			}
-		}
+    var indices = new int[(Resolution - 1) * (Resolution - 1) * 6];
 
-		var combined = new Godot.Collections.Array();
+    counter = 0;
 
-		//All the Mesh. are just numbers. Ill leave them in for clarity only
-		combined.Resize((int)Mesh.ArrayType.Max);
-		combined[(int)Mesh.ArrayType.Vertex] = vertices;
-		combined[(int)Mesh.ArrayType.Index] = indices;
+    for (int y = 0; y < Resolution - 1; y++)
+    {
+      for (int x = 0; x < Resolution - 1; x++)
+      {
+        int i = x + y * Resolution;
 
-		combined[(int)Mesh.ArrayType.Normal] = vertices; // This is a very temporary solution. On a perfect sphere they are the same!!
+        indices[counter++] = i;
+        indices[counter++] = i + Resolution;
+        indices[counter++] = i + Resolution + 1;
+        indices[counter++] = i;
+        indices[counter++] = i + Resolution + 1;
+        indices[counter++] = i + 1;
+      }
+    }
 
-		_mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, combined);
-		
-		Mesh = _mesh;
+    var combined = new Godot.Collections.Array();
+
+    //All the Mesh. are just numbers. Ill leave them in for clarity only
+    combined.Resize((int)Mesh.ArrayType.Max);
+    combined[(int)Mesh.ArrayType.Vertex] = vertices;
+    combined[(int)Mesh.ArrayType.Index] = indices;
+
+    combined[(int)Mesh.ArrayType.Normal] = vertices; // This is a very temporary solution. On a perfect sphere they are the same!!
+
+    combined[(int)Mesh.ArrayType.Color] = colors;
+
+    _mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, combined);
+
+    Mesh = _mesh;
+    
+    var mat = new StandardMaterial3D();
+		mat.VertexColorUseAsAlbedo = true;
+		MaterialOverride = mat;
 	}
 }
