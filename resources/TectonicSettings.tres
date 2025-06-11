@@ -1,0 +1,13 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://c42plnes2o1p1"]
+
+[ext_resource type="Script" uid="uid://db2xhydjttt4s" path="res://scripts/TectonicSettings.cs" id="1_wrx1o"]
+
+[resource]
+script = ExtResource("1_wrx1o")
+LargePlateCount = 7
+SmallPlateCount = 4
+LargeSubPoints = 20
+LargeDeviationAngle = 20.0
+SmallSubPoints = 2
+SmallDeviationAngle = 5.0
+FibonacciPoints = 400

@@ -1,10 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://by7rb348rmugp"]
+[gd_scene load_steps=5 format=3 uid="uid://by7rb348rmugp"]
 
 [ext_resource type="Script" uid="uid://cc0nh1yu0odcx" path="res://scripts/Planet.cs" id="1_jpiwe"]
 [ext_resource type="PackedScene" uid="uid://c4a3mv0tjgaoy" path="res://scenes/FaceMesh.tscn" id="2_1njst"]
 [ext_resource type="Resource" uid="uid://v5jld7vq8hml" path="res://resources/ShapeSettings.tres" id="3_744xv"]
+[ext_resource type="Resource" uid="uid://c42plnes2o1p1" path="res://resources/TectonicSettings.tres" id="4_2ucv6"]
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_jpiwe")
 FaceScene = ExtResource("2_1njst")
 ShapeSettings = ExtResource("3_744xv")
+TectonicSettings = ExtResource("4_2ucv6")

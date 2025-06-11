@@ -1,8 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://ccb5e6alhshgv"]
+[gd_scene load_steps=5 format=3 uid="uid://ccb5e6alhshgv"]
 
-[ext_resource type="PackedScene" uid="uid://by7rb348rmugp" path="res://scenes/Planet.tscn" id="1_fghjm"]
+[ext_resource type="Script" uid="uid://cc0nh1yu0odcx" path="res://scripts/Planet.cs" id="1_iyx0m"]
+[ext_resource type="PackedScene" uid="uid://c4a3mv0tjgaoy" path="res://scenes/FaceMesh.tscn" id="2_74lek"]
+[ext_resource type="Resource" uid="uid://v5jld7vq8hml" path="res://resources/ShapeSettings.tres" id="3_j5jx5"]
+[ext_resource type="Resource" uid="uid://c42plnes2o1p1" path="res://resources/TectonicSettings.tres" id="4_74lek"]
 
 [node name="Node3D" type="Node3D"]
-
-[node name="Node3D" parent="." instance=ExtResource("1_fghjm")]
-Resolution = 100
+script = ExtResource("1_iyx0m")
+FaceScene = ExtResource("2_74lek")
+Resolution = 30
+ShapeSettings = ExtResource("3_j5jx5")
+TectonicSettings = ExtResource("4_74lek")

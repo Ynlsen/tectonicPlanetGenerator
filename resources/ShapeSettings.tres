@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_rylde")
-Seed = 42
+Seed = 69
 NoiseScale = 1.0
 MinHeight = 0.0
 MaxHeight = 0.2
