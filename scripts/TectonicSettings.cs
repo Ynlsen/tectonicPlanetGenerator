@@ -13,4 +13,5 @@ public partial class TectonicSettings : Resource
   [Export] public float SmallDeviationAngle = 5f;
 
   [Export] public int FibonacciPoints = 400;
+  [Export] public float FibonacciDeviationAngle = 3f;
 }

@@ -74,7 +74,12 @@ public partial class TectonicSimulation : Node
       float theta = goldenAngle * i;
       float x = radius * Mathf.Cos(theta);
       float z = radius * Mathf.Sin(theta);
-      points[i] = new Vector3(x, y, z);
+      var point = new Vector3(x, y, z);
+
+      var angle = TectonicSettings.FibonacciDeviationAngle;
+      Basis rotationBasis = Basis.Identity.Rotated(Vector3.Up, Mathf.DegToRad((float)GD.RandRange(-angle, angle))).Rotated(Vector3.Right, Mathf.DegToRad((float)GD.RandRange(-angle, angle)));
+
+      points[i] = rotationBasis * point;
     }
     return points;
   }
