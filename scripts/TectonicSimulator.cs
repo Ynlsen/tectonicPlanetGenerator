@@ -14,7 +14,15 @@ public partial class TectonicSimulation : Node
     public List<Vector3> SubPoints;
   }
 
+  private class PlatePoint
+  {
+    public int Id;
+    public Vector3 Location;
+  }
+
   private List<Plate> plates;
+
+  private List<PlatePoint> platePoints;
 
   private int idCounter;
 
@@ -26,10 +34,16 @@ public partial class TectonicSimulation : Node
     CreateDeviationPlates(TectonicSettings.LargePlateCount, TectonicSettings.LargeSubPoints, TectonicSettings.LargeDeviationAngle);
     CreateDeviationPlates(TectonicSettings.SmallPlateCount, TectonicSettings.SmallSubPoints, TectonicSettings.SmallDeviationAngle);
 
+    platePoints = [];
     var points = FibonacciSphere(400);
 
-    // Find the closest jitter point and save its plate ID to the point
-    // Those points now define the plates on the planet
+    foreach (var point in points)
+    {
+      var nextPoint = new PlatePoint();
+      nextPoint.Location = point;
+      nextPoint.Id = GetPlate(point);
+      platePoints.Add(nextPoint);
+    }
   }
 
   private void CreateDeviationPlates(int count, int subPoints, float deviationAngle)
@@ -67,6 +81,7 @@ public partial class TectonicSimulation : Node
     return points;
   }
   
+  // Somehow needs to use deviationPoints during plate generation and platePoints during mesh generation.
   public int GetPlate(Vector3 vertex)
   {
     // Find the closest point on the sphere to the vertex
