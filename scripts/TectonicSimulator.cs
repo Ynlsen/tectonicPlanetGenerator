@@ -26,7 +26,7 @@ public partial class TectonicSimulation : Node
     CreateDeviationPlates(TectonicSettings.LargePlateCount, TectonicSettings.LargeSubPoints, TectonicSettings.LargeDeviationAngle);
     CreateDeviationPlates(TectonicSettings.SmallPlateCount, TectonicSettings.SmallSubPoints, TectonicSettings.SmallDeviationAngle);
 
-    // Create equally distributed points around the sphere
+    var points = FibonacciSphere(400);
 
     // Find the closest jitter point and save its plate ID to the point
     // Those points now define the plates on the planet
@@ -48,6 +48,23 @@ public partial class TectonicSimulation : Node
       }
       plates.Add(nextPlate);
     }
+  }
+
+  // Found online, translated and adjusted.
+  private Vector3[] FibonacciSphere(int count)
+  {
+    var points = new Vector3[count];
+    float goldenAngle = Mathf.Tau / ((1f + Mathf.Sqrt(5f)) * 0.5f);
+    for (int i = 0; i < count; i++)
+    {
+      float y = 1f - 2f * (i + 0.5f) / count;
+      float radius = Mathf.Sqrt(1f - y * y);
+      float theta = goldenAngle * i;
+      float x = radius * Mathf.Cos(theta);
+      float z = radius * Mathf.Sin(theta);
+      points[i] = new Vector3(x, y, z);
+    }
+    return points;
   }
   
   public int GetPlate(Vector3 vertex)
