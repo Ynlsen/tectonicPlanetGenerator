@@ -35,7 +35,7 @@ public partial class TectonicSimulation : Node
     CreateDeviationPlates(TectonicSettings.SmallPlateCount, TectonicSettings.SmallSubPoints, TectonicSettings.SmallDeviationAngle);
 
     platePoints = [];
-    var points = FibonacciSphere(400);
+    var points = FibonacciSphere(TectonicSettings.FibonacciPoints);
 
     foreach (var point in points)
     {
