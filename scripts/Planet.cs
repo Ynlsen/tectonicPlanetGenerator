@@ -11,10 +11,12 @@ public partial class Planet : Node3D
 
 	[ExportToolButton("Build planet")] public Callable BuildPlanetButton => Callable.From(BuildPlanet);
 
-	public override void _Ready()
-	{
-		BuildPlanet();
-	}
+  private TectonicSimulation tectonicSimulation;
+
+  public override void _Ready()
+  {
+    BuildPlanet();
+  }
 
 	private void BuildPlanet()
 	{
@@ -22,6 +24,10 @@ public partial class Planet : Node3D
 		{
 			child.QueueFree();
 		}
+
+    tectonicSimulation = new TectonicSimulation();
+
+    tectonicSimulation.GeneratePlates();
 
 		var directions = new Vector3[]
 		{
@@ -44,6 +50,8 @@ public partial class Planet : Node3D
 			face.Scale = Vector3.One * Radius;
 
 			face.FaceDirection = direction;
+
+      face.tectonicSimulation = tectonicSimulation;
 
 			AddChild(face);
 		}
