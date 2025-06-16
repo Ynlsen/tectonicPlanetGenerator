@@ -10,6 +10,10 @@ public partial class TectonicSimulation : Node
     public int Id;
 
     public List<Vector3> SubPoints = new();
+
+    public Vector3 MovementAxis;
+
+    public float Speed;
   }
 
   private class PlatePoint
@@ -58,6 +62,11 @@ public partial class TectonicSimulation : Node
         Basis rotationBasis = Basis.Identity.Rotated(Vector3.Up, Mathf.DegToRad((float)GD.RandRange(-deviationAngle, deviationAngle))).Rotated(Vector3.Right, Mathf.DegToRad((float)GD.RandRange(-deviationAngle, deviationAngle)));
         nextPlate.SubPoints.Add(rotationBasis * origin);
       }
+
+      nextPlate.MovementAxis = Vector3.Up.Rotated(Vector3.Right, Mathf.DegToRad((float)GD.RandRange(-180f, 180f))).Rotated(Vector3.Forward, Mathf.DegToRad((float)GD.RandRange(-180f, 180f)));
+
+      nextPlate.Speed = (float)GD.RandRange(0f, 2f);
+
       plates.Add(nextPlate);
     }
   }
@@ -121,5 +130,13 @@ public partial class TectonicSimulation : Node
     }
 
     return bestPlate;
+  }
+  public float GetStress(Vector3 vertex)
+  {
+    // Get 4 nearest plate points
+    // Get cumulative velocity at vertex weighted on distance to the points
+    // Get stress with each plate point based on difference to cumulative velocity
+    // Add based on weight.
+    // return the stress
   }
 }
