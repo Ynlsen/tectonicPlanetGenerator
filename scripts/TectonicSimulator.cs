@@ -133,10 +133,11 @@ public partial class TectonicSimulation : Node
   }
   public float GetStress(Vector3 vertex)
   {
-    // Get 4 nearest plate points
-    // Get cumulative velocity at vertex weighted on distance to the points
-    // Get stress with each plate point based on difference to cumulative velocity
-    // Add based on weight.
-    // return the stress
+    // Get all plate points within a radius around the vertex
+    // Determine the top 3 most prominent plates among those points
+    // Calculate the centroids of those plates, biased toward the vertex
+    // Compute the pairwise stress between the centroids, blending them based on their distance to the vertex
+    // Compute the falloff based on the distance of the vertex to the closest boundary
+    // Return raw stress * falloff
   }
 }
