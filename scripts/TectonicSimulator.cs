@@ -138,6 +138,12 @@ public partial class TectonicSimulation : Node
     // Calculate the centroids of those plates, biased toward the vertex
     // Compute the pairwise stress between the centroids, blending them based on their distance to the vertex
     // Compute the falloff based on the distance of the vertex to the closest boundary
+    //      Get closest non primary plate plate point
+    //      Get 4 nearest primary plate points to the selected foreign point
+    //      Choose best one by checking alignment with foreign point and vertex
+    //      Compute bisector of foreign and chosen point
+    //      Get distance from vertex to bisector
+    //      Calculate falloff based on this distance
     // Return raw stress * falloff
   }
 }
