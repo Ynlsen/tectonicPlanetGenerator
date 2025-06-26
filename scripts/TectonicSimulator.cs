@@ -148,8 +148,19 @@ public partial class TectonicSimulation : Node
       }
     }
 
+    int counter = 0;
+    foreach (var weight in weightByPlate)
+    {
+      if (weight != 0)
+      {
+        counter++;
+      }
+    }
 
-    // TODO: somehow detect and stop if only one plate is in the radius
+    if (counter < 2)
+    {
+      return 0f;
+    }
 
     var centroids = new Vector3[plateCount];
     var velocities = new Vector3[plateCount];
