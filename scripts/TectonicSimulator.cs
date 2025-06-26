@@ -134,9 +134,10 @@ public partial class TectonicSimulation : Node
   public float GetStress(Vector3 vertex)
   {
     // Get all plate points within a radius around the vertex
-    // Determine the top 3 most prominent plates among those points
+    // Determine the top 4 most prominent plates among those points based on individual distance to the vertex
     // Calculate the centroids of those plates, biased toward the vertex
-    // Compute the pairwise stress between the centroids, blending them based on their distance to the vertex
+    // Compute the pairwise stress between the centroids based on their relative velocities
+    // Blend them weighted on their prominence calculated in a previous step
     // Compute the falloff based on the distance of the vertex to the closest boundary
     //      Get the two closest non primary plate plate points
     //      For each, do the following
