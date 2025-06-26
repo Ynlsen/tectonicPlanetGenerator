@@ -141,7 +141,7 @@ public partial class TectonicSimulation : Node
     foreach (var platePoint in platePoints)
     {
       float angDis = Mathf.Acos(vertex.Dot(platePoint.Location));
-      if (angDis <= falloffRad)
+      if (angDis <= falloffRad * 1.2f)
       {
         float w = Mathf.Clamp(1f - angDis / falloffRad, 0, 1);
         weightByPlate[platePoint.Id] += w * w;
@@ -184,7 +184,7 @@ public partial class TectonicSimulation : Node
     {
       for (int j = i + 1; j < plateCount; j++)
       {
-        if (weightByPlate[i] == 0 || weightByPlate[i] == 0)
+        if (weightByPlate[i] == 0 || weightByPlate[j] == 0)
         {
           continue;
         }
@@ -193,11 +193,16 @@ public partial class TectonicSimulation : Node
 
         float stress = (velocities[j] - velocities[i]).Dot(direction);
 
-        float w = Mathf.Min(weightByPlate[i], weightByPlate[j]);
+        float w = weightByPlate[i] * weightByPlate[j];
 
         stressSum += stress * w;
         weightSum += w;
       }
+    }
+
+    if (weightSum == 0f)
+    {
+      return 0f;
     }
 
     float rawStress = stressSum / weightSum;
