@@ -133,6 +133,76 @@ public partial class TectonicSimulation : Node
   }
   public float GetStress(Vector3 vertex)
   {
+    float falloffRad = Mathf.DegToRad(TectonicSettings.falloffDeg);
+    int plateCount = TectonicSettings.LargePlateCount + TectonicSettings.SmallPlateCount;
+
+    var weightByPlate = new float[plateCount];
+
+    foreach (var platePoint in platePoints)
+    {
+      float angDis = Mathf.Acos(vertex.Dot(platePoint.Location));
+      if (angDis <= falloffRad)
+      {
+        float w = Mathf.Clamp(1f - angDis / falloffRad, 0, 1);
+        weightByPlate[platePoint.Id] += w * w;
+      }
+    }
+
+
+    // TODO: somehow detect and stop if only one plate is in the radius
+
+    var centroids = new Vector3[plateCount];
+    var velocities = new Vector3[plateCount];
+
+    for (int i = 0; i < plateCount; i++)
+    {
+      if (weightByPlate[i] == 0)
+      {
+        continue;
+      }
+
+      Vector3 center = Vector3.Zero;
+      foreach (var platePoint in platePoints)
+      {
+        if (platePoint.Id != i)
+        {
+          continue;
+        }
+        float w = 1 / vertex.DistanceTo(platePoint.Location);
+        center += platePoint.Location * w;
+      }
+      centroids[i] = center.Normalized();
+
+      var plate = plates.Find(pl => pl.Id == i); // TODO: BAD SOLUTION :(
+      velocities[i] = plate.Speed * plate.MovementAxis.Cross(vertex);
+    }
+
+    float stressSum = 0f;
+    float weightSum = 0f;
+
+    for (int i = 0; i < plateCount; i++)
+    {
+      for (int j = i + 1; j < plateCount; j++)
+      {
+        if (weightByPlate[i] == 0 || weightByPlate[i] == 0)
+        {
+          continue;
+        }
+
+        Vector3 direction = (centroids[i] - centroids[j]).Normalized();
+
+        float stress = (velocities[j] - velocities[i]).Dot(direction);
+
+        float w = Mathf.Min(weightByPlate[i], weightByPlate[j]);
+
+        stressSum += stress * w;
+        weightSum += w;
+      }
+    }
+
+    float rawStress = stressSum / weightSum;
+
+
     // Get all plate points within a radius around the vertex
     // Determine the top 4 most prominent plates among those points based on individual distance to the vertex
     // Calculate the centroids of those plates, biased toward the vertex
