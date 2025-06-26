@@ -168,7 +168,15 @@ public partial class TectonicSimulation : Node
         {
           continue;
         }
-        float w = 1 / vertex.DistanceTo(platePoint.Location);
+        float d = vertex.DistanceTo(platePoint.Location);
+        float w;
+        if (d < 0.05f)
+        {
+          w = 1 / 0.05f;
+        } else
+        {
+          w = 1 / d;
+        }
         center += platePoint.Location * w;
       }
       centroids[i] = center.Normalized();
