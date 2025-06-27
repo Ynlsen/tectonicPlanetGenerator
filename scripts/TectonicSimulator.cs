@@ -245,6 +245,9 @@ public partial class TectonicSimulation : Node
 
       if (d < firstDistance)
       {
+        secondDistance = firstDistance;
+        secondForeignPoint = firstForeignPoint;
+
         firstDistance = d;
         firstForeignPoint = platePoint;
       }
@@ -313,16 +316,31 @@ public partial class TectonicSimulation : Node
 
       if (d < firstDistance)
       {
+        fourthDistance = thirdDistance;
+        fourthSelectedPoint = thirdSelectedPoint;
+        thirdDistance = secondDistance;
+        thirdSelectedPoint = secondSelectedPoint;
+        secondDistance = firstDistance;
+        secondSelectedPoint = firstSelectedPoint;
+
         firstDistance = d;
         firstSelectedPoint = platePoint;
       }
       else if (d < secondDistance)
       {
+        fourthDistance = thirdDistance;
+        fourthSelectedPoint = thirdSelectedPoint;
+        thirdDistance = secondDistance;
+        thirdSelectedPoint = secondSelectedPoint;
+
         secondDistance = d;
         secondSelectedPoint = platePoint;
       }
       else if (d < thirdDistance)
       {
+        fourthDistance = thirdDistance;
+        fourthSelectedPoint = thirdSelectedPoint;
+
         thirdDistance = d;
         thirdSelectedPoint = platePoint;
       }
