@@ -184,7 +184,8 @@ public partial class TectonicSimulation : Node
         if (d < 0.05f)
         {
           w = 1 / 0.05f;
-        } else
+        }
+        else
         {
           w = 1 / d;
         }
@@ -227,6 +228,46 @@ public partial class TectonicSimulation : Node
     float rawStress = stressSum / weightSum;
 
 
+    int primaryPlateId = GetPlate(vertex);
+
+    float firstDistance = float.MaxValue;
+    float secondDistance = float.MaxValue;
+
+    PlatePoint firstForeignPoint = null;
+    PlatePoint secondForeignPoint = null;
+    foreach (var platePoint in platePoints)
+    {
+      if (platePoint.Id == primaryPlateId)
+      {
+        continue;
+      }
+      float d = vertex.DistanceSquaredTo(platePoint.Location);
+
+      if (d < firstDistance)
+      {
+        firstDistance = d;
+        firstForeignPoint = platePoint;
+      }
+      else if (d < secondDistance)
+      {
+        secondDistance = d;
+        secondForeignPoint = platePoint;
+      }
+    }
+
+    Vector3 firstProj = CalculateEdgeProjection(firstForeignPoint.Location, primaryPlateId);
+    Vector3 secondProj = CalculateEdgeProjection(secondForeignPoint.Location, primaryPlateId);
+
+    float firstAngle = Mathf.Acos(vertex.Dot(firstProj));
+    float secondAngle = Mathf.Acos(vertex.Dot(secondProj));
+
+    float angle = Mathf.Min(firstAngle, secondAngle);
+
+    float falloff = Mathf.Clamp((0.7f - (angle / (falloffRad * 0.8f))) / 0.7f, 0, 1);
+
+
+    return rawStress * falloff * falloff;
+
     // Get all plate points within a radius around the vertex
     // Determine the top 4 most prominent plates among those points based on individual distance to the vertex
     // Calculate the centroids of those plates, biased toward the vertex
@@ -249,5 +290,10 @@ public partial class TectonicSimulation : Node
     //      Take the shorter distance
     //      Calculate falloff based on this distance
     // Return raw stress * falloff
+  }
+
+  private Vector3 CalculateEdgeProjection(Vector3 foreignPoint, int primaryPlateId)
+  {
+    
   }
 }
