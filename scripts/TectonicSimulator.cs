@@ -255,8 +255,8 @@ public partial class TectonicSimulation : Node
       }
     }
 
-    Vector3 firstProj = CalculateEdgeProjection(firstForeignPoint.Location, primaryPlateId);
-    Vector3 secondProj = CalculateEdgeProjection(secondForeignPoint.Location, primaryPlateId);
+    Vector3 firstProj = CalculateEdgeProjection(firstForeignPoint, primaryPlateId, vertex);
+    Vector3 secondProj = CalculateEdgeProjection(secondForeignPoint, primaryPlateId, vertex);
 
     float firstAngle = Mathf.Acos(vertex.Dot(firstProj));
     float secondAngle = Mathf.Acos(vertex.Dot(secondProj));
@@ -292,8 +292,147 @@ public partial class TectonicSimulation : Node
     // Return raw stress * falloff
   }
 
-  private Vector3 CalculateEdgeProjection(Vector3 foreignPoint, int primaryPlateId)
+  private Vector3 CalculateEdgeProjection(PlatePoint foreignPoint, int primaryPlateId, Vector3 vertex)
   {
-    
+    float firstDistance = float.MaxValue;
+    float secondDistance = float.MaxValue;
+    float thirdDistance = float.MaxValue;
+    float fourthDistance = float.MaxValue;
+
+    PlatePoint firstSelectedPoint = null;
+    PlatePoint secondSelectedPoint = null;
+    PlatePoint thirdSelectedPoint = null;
+    PlatePoint fourthSelectedPoint = null;
+    foreach (var platePoint in platePoints)
+    {
+      if (platePoint.Id == primaryPlateId)
+      {
+        continue;
+      }
+      float d = vertex.DistanceSquaredTo(platePoint.Location);
+
+      if (d < firstDistance)
+      {
+        firstDistance = d;
+        firstSelectedPoint = platePoint;
+      }
+      else if (d < secondDistance)
+      {
+        secondDistance = d;
+        secondSelectedPoint = platePoint;
+      }
+      else if (d < thirdDistance)
+      {
+        thirdDistance = d;
+        thirdSelectedPoint = platePoint;
+      }
+      else if (d < fourthDistance)
+      {
+        fourthDistance = d;
+        fourthSelectedPoint = platePoint;
+      }
+    }
+
+    PlatePoint selectedPoint = null;
+    float bestWeight = float.MaxValue;
+
+    float angFV = Mathf.Acos(foreignPoint.Location.Dot(vertex));
+
+    if (firstSelectedPoint != null)
+    {
+      float angSV = Mathf.Acos(firstSelectedPoint.Location.Dot(vertex));
+      float angSF = Mathf.Acos(firstSelectedPoint.Location.Dot(foreignPoint.Location));
+      float w = Mathf.Min(angSV + 1.1f * angSF, angSV + 1.1f * angFV);
+      if (w < bestWeight)
+      {
+        bestWeight = w;
+        selectedPoint = firstSelectedPoint;
+      }
+    }
+    if (secondSelectedPoint != null)
+    {
+      float angSV = Mathf.Acos(secondSelectedPoint.Location.Dot(vertex));
+      float angSF = Mathf.Acos(secondSelectedPoint.Location.Dot(foreignPoint.Location));
+      float w = Mathf.Min(angSV + 1.1f * angSF, angSV + 1.1f * angFV);
+      if (w < bestWeight)
+      {
+        bestWeight = w;
+        selectedPoint = secondSelectedPoint;
+      }
+    }
+    if (thirdSelectedPoint != null)
+    {
+      float angSV = Mathf.Acos(thirdSelectedPoint.Location.Dot(vertex));
+      float angSF = Mathf.Acos(thirdSelectedPoint.Location.Dot(foreignPoint.Location));
+      float w = Mathf.Min(angSV + 1.1f * angSF, angSV + 1.1f * angFV);
+      if (w < bestWeight)
+      {
+        bestWeight = w;
+        selectedPoint = thirdSelectedPoint;
+      }
+    }
+    if (fourthSelectedPoint != null)
+    {
+      float angSV = Mathf.Acos(fourthSelectedPoint.Location.Dot(vertex));
+      float angSF = Mathf.Acos(fourthSelectedPoint.Location.Dot(foreignPoint.Location));
+      float w = Mathf.Min(angSV + 1.1f * angSF, angSV + 1.1f * angFV);
+      if (w < bestWeight)
+      {
+        bestWeight = w;
+        selectedPoint = fourthSelectedPoint;
+      }
+    }
+
+    Vector3 planeNormal = (selectedPoint.Location - foreignPoint.Location).Normalized();
+
+    Vector3 proj = (vertex - planeNormal * planeNormal.Dot(vertex)).Normalized();
+
+    float distProjF = proj.DistanceSquaredTo(foreignPoint.Location);
+    float distProjS = proj.DistanceSquaredTo(selectedPoint.Location);
+
+    PlatePoint alternativePoint = null;
+    bestWeight = float.MaxValue;
+
+    foreach (var platePoint in platePoints)
+    {
+      if (platePoint == foreignPoint || platePoint == selectedPoint)
+      {
+        continue;
+      }
+
+      float distProjA = proj.DistanceSquaredTo(platePoint.Location);
+      if (distProjA > distProjF || distProjA > distProjS)
+      {
+        continue;
+      }
+
+      float angFA = Mathf.Acos(foreignPoint.Location.Dot(platePoint.Location));
+      float angVA = Mathf.Acos(vertex.Dot(platePoint.Location));
+      float w = angVA + 1.1f * angFA;
+
+      if (w < bestWeight)
+      {
+        bestWeight = w;
+        alternativePoint = platePoint;
+      }
+    }
+
+    if (alternativePoint != null)
+    {
+      Vector3 alternativePlaneNormal;
+      if (alternativePoint.Id == primaryPlateId)
+      {
+        alternativePlaneNormal = (alternativePoint.Location - foreignPoint.Location).Normalized();
+      }
+      else
+      {
+        alternativePlaneNormal = (selectedPoint.Location - alternativePoint.Location).Normalized();
+      }
+
+      Vector3 intersection = planeNormal.Cross(alternativePlaneNormal).Normalized();
+      proj = (vertex.Dot(intersection) >= 0) ? intersection : -intersection;
+    }
+
+    return proj;
   }
 }
