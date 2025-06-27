@@ -93,6 +93,7 @@ public partial class TectonicSimulation : Node
     return points;
   }
 
+  // Returns the plate that the vertex belongs to based on the closest deviation point
   private int GetDeviationPlate(Vector3 vertex)
   {
     int bestPlate = -1;
@@ -114,6 +115,7 @@ public partial class TectonicSimulation : Node
     return bestPlate;
   }
 
+  // Returns the plate that the vertex belongs to based on the closest plate point
   public int GetPlate(Vector3 vertex)
   {
     int bestPlate = -1;
