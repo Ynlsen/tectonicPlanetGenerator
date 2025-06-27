@@ -133,9 +133,12 @@ public partial class TectonicSimulation : Node
   }
   public float GetStress(Vector3 vertex)
   {
+    // Calculate rawstress based on relative plate velocities at the vertex and their distances
+
     float falloffRad = Mathf.DegToRad(TectonicSettings.falloffDeg);
     int plateCount = TectonicSettings.LargePlateCount + TectonicSettings.SmallPlateCount;
 
+    // Get all plate points within a radius around the vertex and assign their plate a weight based on their distances 
     var weightByPlate = new float[plateCount];
 
     foreach (var platePoint in platePoints)
@@ -162,6 +165,7 @@ public partial class TectonicSimulation : Node
       return 0f;
     }
 
+    // Calculate the centroids of the plates biased towards the vertex
     var centroids = new Vector3[plateCount];
     var velocities = new Vector3[plateCount];
 
@@ -197,6 +201,8 @@ public partial class TectonicSimulation : Node
       velocities[i] = plate.Speed * plate.MovementAxis.Cross(vertex);
     }
 
+    // Compute the pairwise stress between the centroids based on their relative velocities
+    // Blend them by their weight calculated in a previous step
     float stressSum = 0f;
     float weightSum = 0f;
 
@@ -227,9 +233,11 @@ public partial class TectonicSimulation : Node
 
     float rawStress = stressSum / weightSum;
 
+    // Calculate falloff based on distance to the distance of the vertex to the closest plate boundary
 
     int primaryPlateId = GetPlate(vertex);
 
+    // Get the two closest non primary plate plate points
     float firstDistance = float.MaxValue;
     float secondDistance = float.MaxValue;
 
@@ -258,9 +266,11 @@ public partial class TectonicSimulation : Node
       }
     }
 
+    // For both, get the edge projection of the vertex
     Vector3 firstProj = CalculateEdgeProjection(firstForeignPoint, primaryPlateId, vertex);
     Vector3 secondProj = CalculateEdgeProjection(secondForeignPoint, primaryPlateId, vertex);
 
+    // Take the closer projection to calculate the linear falloff
     float firstAngle = Mathf.Acos(vertex.Dot(firstProj));
     float secondAngle = Mathf.Acos(vertex.Dot(secondProj));
 
@@ -270,33 +280,11 @@ public partial class TectonicSimulation : Node
 
 
     return rawStress * falloff * falloff;
-
-    // Get all plate points within a radius around the vertex
-    // Determine the top 4 most prominent plates among those points based on individual distance to the vertex
-    // Calculate the centroids of those plates, biased toward the vertex
-    // Compute the pairwise stress between the centroids based on their relative velocities
-    // Blend them weighted on their prominence calculated in a previous step
-    // Compute the falloff based on the distance of the vertex to the closest boundary
-    //      Get the two closest non primary plate plate points
-    //      For each, do the following
-    //           Get the 4 nearest primary plate points to the selected foreign point
-    //           Choose the best one by checking alignment with the foreign point and vertex
-    //           Compute the bisector of the foreign and chosen point
-    //           Project vertex on the bisector
-    //           Find all points that are closer than the selected point or the foreign point to the projection
-    //           If there is at least one of those points
-    //                 Select the one that is most aligned with the vertex and foreign point
-    //                 Calculate the bisector with this point as well
-    //                 Calculate the intersection of these two bisector
-    //                 Take the distance of the vertex to this intersection point
-    //           Else, take the distance from the vertex to the projection
-    //      Take the shorter distance
-    //      Calculate falloff based on this distance
-    // Return raw stress * falloff
   }
 
   private Vector3 CalculateEdgeProjection(PlatePoint foreignPoint, int primaryPlateId, Vector3 vertex)
   {
+    //Get the 4 nearest primary plate points to the foreign point
     float firstDistance = float.MaxValue;
     float secondDistance = float.MaxValue;
     float thirdDistance = float.MaxValue;
@@ -351,6 +339,7 @@ public partial class TectonicSimulation : Node
       }
     }
 
+    // Select the best one by checking alignment with the foreign point and vertex
     PlatePoint selectedPoint = null;
     float bestWeight = float.MaxValue;
 
@@ -401,10 +390,13 @@ public partial class TectonicSimulation : Node
       }
     }
 
+    // Compute the bisector of the foreign and chosen point. Then project the vertex onto the bisector
     Vector3 planeNormal = (selectedPoint.Location - foreignPoint.Location).Normalized();
 
     Vector3 proj = (vertex - planeNormal * planeNormal.Dot(vertex)).Normalized();
 
+    // Find a plate point that is closer to the projection than the foreign or the selected point
+    // When there are multiple, select the one that is more aligned
     float distProjF = proj.DistanceSquaredTo(foreignPoint.Location);
     float distProjS = proj.DistanceSquaredTo(selectedPoint.Location);
 
@@ -435,6 +427,7 @@ public partial class TectonicSimulation : Node
       }
     }
 
+    // If there is such a point, calculate the bisector with it and then take the intersection of our two bisectors as the projection.
     if (alternativePoint != null)
     {
       Vector3 alternativePlaneNormal;
