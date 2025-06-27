@@ -308,7 +308,7 @@ public partial class TectonicSimulation : Node
     PlatePoint fourthSelectedPoint = null;
     foreach (var platePoint in platePoints)
     {
-      if (platePoint.Id == primaryPlateId)
+      if (platePoint.Id != primaryPlateId)
       {
         continue;
       }
