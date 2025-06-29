@@ -278,7 +278,7 @@ public partial class TectonicSimulation : Node
 
     float angle = Mathf.Min(firstAngle, secondAngle);
 
-    float falloff = Mathf.Clamp((0.7f - (angle / (falloffRad * 0.8f))) / 0.7f, 0, 1);
+    float falloff = Mathf.Clamp((0.6f - (angle / (falloffRad * 0.9f))) / 0.6f, 0, 1);
 
 
     return rawStress * falloff * falloff;
