@@ -3,22 +3,22 @@ using Godot;
 [Tool]
 public partial class FaceMesh : MeshInstance3D
 {
-	[Export] public int Resolution = 10;
+  [Export] public int Resolution = 10;
 
-	[Export] public ShapeSettings ShapeSettings;
+  [Export] public ShapeSettings ShapeSettings;
 
-	[Export] public Vector3 FaceDirection = Vector3.Up; 
+  [Export] public Vector3 FaceDirection = Vector3.Up; 
 
-	[ExportToolButton("Build mesh")] public Callable BuildMeshButton => Callable.From(BuildMesh);
+  [ExportToolButton("Build mesh")] public Callable BuildMeshButton => Callable.From(BuildMesh);
 
-	private ArrayMesh _mesh =  new ArrayMesh();
+  private ArrayMesh _mesh =  new ArrayMesh();
 
-	private Vector3 tangent1;
-	private Vector3 tangent2;
+  private Vector3 tangent1;
+  private Vector3 tangent2;
 
   public TectonicSimulation tectonicSimulation;
 
-	private void CalculateTangents()
+  private void CalculateTangents()
   {
     if (Mathf.Abs(FaceDirection.Dot(Vector3.Up)) > 0.9f)
     {
@@ -32,11 +32,11 @@ public partial class FaceMesh : MeshInstance3D
     tangent2 = FaceDirection.Cross(tangent1).Normalized();
   }
 
-	public override void _Ready()
-	{
-		_mesh = new ArrayMesh();
-		BuildMesh();
-	}
+  public override void _Ready()
+  {
+    _mesh = new ArrayMesh();
+    BuildMesh();
+  }
 
   private void BuildMesh()
   {
@@ -127,7 +127,7 @@ public partial class FaceMesh : MeshInstance3D
     Mesh = _mesh;
     
     var mat = new StandardMaterial3D();
-		mat.VertexColorUseAsAlbedo = true;
-		MaterialOverride = mat;
-	}
+    mat.VertexColorUseAsAlbedo = true;
+    MaterialOverride = mat;
+  }
 }
