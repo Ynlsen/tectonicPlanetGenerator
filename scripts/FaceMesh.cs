@@ -58,6 +58,7 @@ public partial class FaceMesh : MeshInstance3D
 
     int counter = 0;
 
+    // Creates the vertices and assigns them a location and color
     for (int y = 0; y < Resolution; y++)
     {
       float v = y / (float)(Resolution - 1);
@@ -90,6 +91,7 @@ public partial class FaceMesh : MeshInstance3D
       }
     }
 
+    // Connects the vertices by adding edges
     var indices = new int[(Resolution - 1) * (Resolution - 1) * 6];
 
     counter = 0;

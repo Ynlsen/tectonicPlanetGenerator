@@ -22,6 +22,7 @@ public partial class Planet : Node3D
 
 	private void BuildPlanet()
 	{
+    // Clears the previous faces
 		foreach (Node child in GetChildren())
 		{
 			child.QueueFree();
@@ -32,6 +33,7 @@ public partial class Planet : Node3D
 
     tectonicSimulation.GeneratePlates();
 
+    // Spawns the 6 faces of the sphere and assigns them a direction and more data
     var directions = new Vector3[]
 		{
 			Vector3.Up,
