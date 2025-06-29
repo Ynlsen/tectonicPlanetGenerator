@@ -79,7 +79,12 @@ public partial class FaceMesh : MeshInstance3D
         var plateId = tectonicSimulation.GetPlate(spherical);
 
         var hue = plateId / (float)(tectonicSimulation.TectonicSettings.LargePlateCount + tectonicSimulation.TectonicSettings.SmallPlateCount);
-        colors[counter] = Color.FromHsv(hue, 1, 1);
+
+        float stress = tectonicSimulation.GetStress(spherical);
+        
+        float value = Mathf.Clamp(1 / (1 + (float) Mathf.Exp(-1.5 * stress)),0,1);
+
+        colors[counter] = Color.FromHsv(hue, 1, value);
 
         counter++;
       }
