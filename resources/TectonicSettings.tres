@@ -10,4 +10,6 @@ LargeSubPoints = 20
 LargeDeviationAngle = 20.0
 SmallSubPoints = 2
 SmallDeviationAngle = 5.0
-FibonacciPoints = 400
+FibonacciPoints = 1000
+FibonacciDeviationAngle = 2.0
+falloffDeg = 10.0

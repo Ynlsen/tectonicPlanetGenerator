@@ -6,8 +6,9 @@
 [ext_resource type="Resource" uid="uid://c42plnes2o1p1" path="res://resources/TectonicSettings.tres" id="4_74lek"]
 
 [node name="Node3D" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 script = ExtResource("1_iyx0m")
 FaceScene = ExtResource("2_74lek")
-Resolution = 30
+Resolution = 200
 ShapeSettings = ExtResource("3_j5jx5")
 TectonicSettings = ExtResource("4_74lek")
