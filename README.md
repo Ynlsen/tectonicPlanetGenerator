@@ -17,3 +17,4 @@ The project is heavily work in progress and currently has many missing features.
 - **Mountain Noise**: Use a different mountain like noise that gradually blends in depending on the stress value.
 - **Rivers**: Generate rivers that flow down mountains and get wider.
 - **Biomes**: Determine biomes based on latitude and elevation to color the terrain.
+- **Hotspots**: Simulate mantle plumes that create volcanic hotspots and island chains.
