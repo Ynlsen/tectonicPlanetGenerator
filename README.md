@@ -18,3 +18,6 @@ The project is heavily work in progress and currently has many missing features.
 - **Rivers**: Generate rivers that flow down mountains and get wider.
 - **Biomes**: Determine biomes based on latitude and elevation to color the terrain.
 - **Hotspots**: Simulate mantle plumes that create volcanic hotspots and island chains.
+
+## Screenshot
+![Screenshot](https://yniederer.ch/tectonic-planet-generator.jpg)
